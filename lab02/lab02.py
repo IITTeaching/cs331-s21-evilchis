@@ -34,11 +34,21 @@ ROMEO_SOLILOQUY = """
 # Implement this function
 def compute_ngrams(toks, n=2):
     """Returns an n-gram dictionary based on the provided list of tokens."""
-    pass
+    nGrams = {}
+    for i in range(len(toks)-n+1):
+        lst = []
+        for j in range(1,n):
+            lst.append(toks[i+j])
+        if toks[i] in nGrams.keys():
+            nGrams[toks[i]].append(tuple(lst))
+        else:
+            nGrams[toks[i]] = [tuple(lst)]
+    return nGrams
 
 def test1():
     test1_1()
     test1_2()
+    print('complete1')
 
 # 20 Points
 def test1_1():
@@ -63,6 +73,7 @@ def test1_1():
                     ('is', 'my', 'lady,'),
                     ('is', 'my', 'love!'),
                     ('were', 'not', 'night.')])
+    print('complete1_1')
 
 # 30 Points
 def test1_2():
@@ -87,13 +98,30 @@ def test1_2():
                     ('was', 'waiting')])
     tc.assertEqual(len(dct['wendy']), 202)
     tc.assertEqual(len(dct['peter']), 243)
+    print('complete1_2')
 
 ################################################################################
 # EXERCISE 2
 ################################################################################
 # Implement this function
+import random
 def gen_passage(ngram_dict, length=100):
-    pass
+    hold = []
+    key = random.choice(sorted(ngram_dict.keys()))
+    hold.append(key)
+    while len(hold) <= length:
+        tup = random.choice(ngram_dict[key])
+        hold.extend(tup)
+        if tup[-1] in ngram_dict.keys():
+            key = tup[-1]
+        else:
+            key = random.choice(sorted(ngram_dict.keys()))
+            hold.append(key)
+
+    hold = hold[:length]
+    txt = " ".join([x for x in hold])
+    return txt
+
 
 # 50 Points
 def test2():
@@ -108,10 +136,12 @@ def test2():
     romeo_toks = [t.lower() for t in ROMEO_SOLILOQUY.split()]
     tc.assertEqual(gen_passage(compute_ngrams(romeo_toks), 10),
                    'too bold, \'tis not night. see, how she leans her')
+    print('completed2')
 
 def main():
     test1()
     test2()
+    print('complete')
 
 if __name__ == '__main__':
     main()
