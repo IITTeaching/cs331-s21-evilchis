@@ -17,7 +17,13 @@ def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
     right element, 1 if the left is larger than the right, and 0 if the two
     elements are equal.
     """
-    pass
+    n = len(lst)
+    for i in range(n):
+        for j in range(n - i - 1):
+            # num = compare(lst[j], lst[j+1])
+            if compare(lst[j], lst[j+1]) == 1:
+                lst[j], lst[j+1] = lst[j+1], lst[j]
+    return lst
 
 def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     """
@@ -27,7 +33,18 @@ def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     position of the first (leftmost) match for elem in lst. If elem does not
     exist in lst, then return -1.
     """
-    pass
+    low = 0
+    high = len(lst) - 1
+    # mid = 0
+    while low <= high:
+        mid = (high + low) // 2
+        if compare(lst[mid],elem) == -1:
+            low = mid + 1
+        elif compare(lst[mid],elem) == 1:
+            high = mid - 1
+        else:
+            return mid
+    return -1
 
 class Student():
     """Custom class to test generic sorting and searching."""
@@ -47,6 +64,7 @@ def test1():
     test1_3()
     test1_4()
     test1_5()
+    # print('complete1')
 
 # 6 Points
 def test1_1():
@@ -57,6 +75,7 @@ def test1_1():
     intcmp = lambda x,y:  0 if x == y else (-1 if x < y else 1)
     sortedints = mysort(ints, intcmp)
     tc.assertEqual(sortedints, [2, 3, 4, 7, 9, 10])
+    # print('complete1.1')
 
 # 6 Points
 def test1_2():
@@ -67,6 +86,8 @@ def test1_2():
     suffixcmp = lambda x,y: 0 if x[-1] == y[-1] else (-1 if x[-1] < y[-1] else 1)
     sortedstrs = mysort(strs,suffixcmp)
     tc.assertEqual(sortedstrs, [ 'zasa', 'abcd', 'aacz' ])
+    print(strs)
+    # print('complete1.2')
 
 # 6 Points
 def test1_3():
@@ -77,6 +98,7 @@ def test1_3():
     sortedstudents = mysort(students, lambda x,y: 0 if x.gpa == y.gpa else (-1 if x.gpa < y.gpa else 1))
     expected = [ Student('Angela', 2.5), Student('Josh', 3.0), Student('Jia',  3.5), Student('Vinesh', 3.8) ]
     tc.assertEqual(sortedstudents, expected)
+    # print('complete1.3')
 
 # 6 Points
 def test1_4():
@@ -89,6 +111,7 @@ def test1_4():
     tc.assertEqual(mybinsearch(sortedints, 3, intcmp), 1)
     tc.assertEqual(mybinsearch(sortedints, 10, intcmp), 5)
     tc.assertEqual(mybinsearch(sortedints, 11, intcmp), -1)
+    # print('complete1.4')
 
 # 6 Points
 def test1_5():
@@ -101,6 +124,8 @@ def test1_5():
     sortedstudents = mysort(students, stcmp)
     tc.assertEqual(mybinsearch(sortedstudents, 3.5, stbincmp), 2)
     tc.assertEqual(mybinsearch(sortedstudents, 3.7, stbincmp), -1)
+    # print('complete1.5')
+# d
 
 #################################################################################
 # EXERCISE 2
@@ -112,22 +137,33 @@ class PrefixSearcher():
         Initializes a prefix searcher using a document and a maximum
         search string length k.
         """
-        pass
+        self.substringSize = k
+        self.lst = []
+        for i in range(0,len(document)-k):
+            self.lst.append(document[i:i+k])
+        for i in range(len(document)-k,len(document)):
+            self.lst.append(document[i:len(document)])
+        cmp = lambda x,y: 0 if x == y else (-1 if x < y else 1)
+        self.lst = mysort(self.lst, cmp)
+        print(self.lst)
 
     def search(self, q):
         """
-        Return true if the document contains search string q (of
-
-        length up to n). If q is longer than n, then raise an
+        Return true if the document contains search string q 
+        (of length up to n). If q is longer than n, then raise an
         Exception.
         """
-        pass
+        if len(q) > self.substringSize:
+            raise Exception("Sorry, string is too long.")
+        cmp = lambda l,r: 0 if (l[0:len(r)] == r) else (-1 if (l[0:len(r)] < r) else 1)
+        return mybinsearch(self.lst, q, cmp) > -1\
 
 # 30 Points
 def test2():
     print("#" * 80 + "\nSearch for substrings up to length n")
     test2_1()
     test2_2()
+    # print('complete2')
 
 # 15Points
 def test2_1():
@@ -143,6 +179,7 @@ def test2_1():
     tc.assertTrue(p.search("l"))
     tc.assertTrue(p.search("ll"))
     tc.assertFalse(p.search("lW"))
+    # print('complete2.1')
 
 # 20 Points
 def test2_2():
@@ -153,6 +190,8 @@ def test2_2():
     p = PrefixSearcher(md_text[0:1000],4)
     tc.assertTrue(p.search("Moby"))
     tc.assertTrue(p.search("Dick"))
+    # print('complete2.2')
+# d
 
 #################################################################################
 # EXERCISE 3
@@ -163,8 +202,7 @@ class SuffixArray():
         """
         Creates a suffix array for document (a string).
         """
-        pass
-
+        self.sa = [rank for suffix, rank in sorted((document[i:], i) for i in range(len(document)))]
 
     def positions(self, searchstr: str):
         """
@@ -174,7 +212,7 @@ class SuffixArray():
 
     def contains(self, searchstr: str):
         """
-        Returns true of searchstr is coontained in document.
+        Returns true of searchstr is contained in document.
         """
         pass
 
@@ -184,6 +222,7 @@ def test3():
     print(80 * "#" + "\nTest suffix arrays.")
     test3_1()
     test3_2()
+    # print('complete3')
 
 
 # 20 Points
@@ -197,6 +236,7 @@ def test3_1():
     tc.assertFalse(s.contains("Z"))
     tc.assertFalse(s.contains("Y"))
     tc.assertTrue(s.contains("ello Wo"))
+    # print('complete3.1')
 
 
 # 20 Points
@@ -209,6 +249,7 @@ def test3_2():
     tc.assertTrue(s.contains("Moby Dick"))
     tc.assertTrue(s.contains("Herman Melville"))
     tc.assertEqual(s.positions("Moby Dick"), [427])
+    # print('complete3.2')
 
 
 #################################################################################
