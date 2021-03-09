@@ -116,40 +116,80 @@ class ArrayList:
         returns `str(x)` for all values `x` in this list, separated by commas
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        if self.len == 0:
+            return '[]'
+        else:
+            string = '['
+            for i in range(self.len-1):
+                string+= (str(self.data[i])) + ', '
+            string += (str(self.data[self.len-1])) + ']'
+            return string
 
     def __repr__(self):
         """Supports REPL inspection. (Same behavior as `str`.)"""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        return self.__str__()
 
 
     ### single-element manipulation ###
 
+    def double(self):
+        temp = ConstrainedList(self.len*2)
+        for i in range(self.len):
+            temp[i] = self.data[i]
+        self.data = temp
+
     def append(self, value):
         """Appends value to the end of this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        if(len(self.data) == self.len):
+            self.double()
+        if(self.len == 0):
+                temp = ConstrainedList(1)
+                self.data = temp
+        self.data[self.len] = value
+        self.len += 1
+        
 
     def insert(self, idx, value):
         """Inserts value at position idx, shifting the original elements down the
         list, as needed. Note that inserting a value at len(self) --- equivalent
         to appending the value --- is permitted. Raises IndexError if idx is invalid."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        idx = self._normalize_idx(idx)
+        for i in range(self.len, idx, -1):
+            self.data[i] = self.data[i-1]
+        self.data[idx] = value
+        self.len+=1
+        if len(self.data) == self.len:
+            self.double()
 
     def pop(self, idx=-1):
         """Deletes and returns the element at idx (which is the last element,
         by default)."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        idx = self._normalize_idx(idx)
+        element = self.data[idx]
+        self.data[idx] = None
+        for i in range(idx, self.len):
+            self.data[i]=self.data[i+1]
+        self.len -= 1
+        return element
 
     def remove(self, value):
         """Removes the first (closest to the front) instance of value from the
         list. Raises a ValueError if value is not found in the list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        index = -1
+        for i in range(self.len):
+            if self.data[i] == value:
+                index = i
+                break
+        if index == -1:
+            raise ValueError
+        else:
+            self.pop(index)
 
 
     ### predicates (T/F queries) ###
@@ -157,44 +197,71 @@ class ArrayList:
     def __eq__(self, other):
         """Returns True if this ArrayList contains the same elements (in order) as
         other. If other is not an ArrayList, returns False."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        if self.len != other.len or type(other) != ArrayList:
+            return False
+        for i in range(self.len):
+            if other.data[i] != self.data[i]:
+                return False
+        return True
 
     def __contains__(self, value):
         """Implements `val in self`. Returns true if value is found in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
-
+        for i in range(self.len):
+            if self.data[i] == value:
+                return True
+        return False
 
     ### queries ###
 
     def __len__(self):
         """Implements `len(self)`"""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        return self.len
 
     def min(self):
         """Returns the minimum value in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        minn = self.data[0]
+        for i in range(self.len):
+            minn = min(minn, self.data[i])
+        return minn
 
     def max(self):
         """Returns the maximum value in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        maxx = self.data[0]
+        for i in range(self.len):
+            maxx = max(maxx, self.data[i])
+        return maxx
 
     def index(self, value, i=0, j=None):
         """Returns the index of the first instance of value encountered in
         this list between index i (inclusive) and j (exclusive). If j is not
         specified, search through the end of the list for value. If value
         is not in the list, raise a ValueError."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        if j == None:
+            j = self.len
+        j = self._normalize_idx(j)
+        index = -1
+        for i in range(i, j):
+            if self.data[i] == value:
+                index = i
+                break
+        if index == -1:
+            raise ValueError
+        else:
+            return index
 
     def count(self, value):
         """Returns the number of times value appears in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        count = 0
+        for i in range(self.len):
+            if self.data[i] == value:
+                count+=1
+        return count
 
 
     ### bulk operations ###
@@ -203,8 +270,12 @@ class ArrayList:
         """Implements `self + other_array_list`. Returns a new ArrayList
         instance that contains the values in this list followed by those
         of other."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        temp = ArrayList()
+        for i in range(self.len):
+            temp.append(self.data[i])
+        for i in range(other.len):
+            temp.append(other.data[i])
+        return temp
 
     def clear(self):
         self.data = ConstrainedList() # don't change this!
@@ -213,21 +284,26 @@ class ArrayList:
     def copy(self):
         """Returns a new ArrayList instance (with a separate data store), that
         contains the same values as this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        
+        temp = ArrayList()
+        for i in range(self.len):
+            temp.append(self.data[i])
+        return temp
 
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        for i in range(len(other)):
+            self.append(other[i])
 
 
     ### iteration ###
 
     def __iter__(self):
         """Supports iteration (via `iter(self)`)"""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+
+        for i in range(len(self)):
+            yield self.data[i]
 
 ################################################################################
 # TEST CASES
@@ -281,6 +357,7 @@ def test_case_1():
     for i in range(0, -len(data), -1):
         tc.assertEqual(lst[i], data[i])
     suc()
+    print('comp1')
 
 ########################################
 # 10 points
@@ -304,6 +381,7 @@ def test_case_2():     # (4 points) test stringification
     tc.assertEqual('[10, 20, 30, 40, 50]', str(lst))
     tc.assertEqual('[10, 20, 30, 40, 50]', repr(lst))
     suc()
+    print('comp2')
 
 ########################################
 # 15 points
@@ -317,6 +395,7 @@ def test_case_3():
         to_add = random.randrange(1000)
         data.append(to_add)
         lst.append(to_add)
+    
 
     tc.assertIsInstance(lst.data, ConstrainedList)
     tc.assertEqual(data, arrayListToList(lst))
@@ -345,6 +424,7 @@ def test_case_3():
     with tc.assertRaises(ValueError):
         lst.remove(9999)
     suc()
+    print('comp3')
 
 ########################################
 # 15 points
@@ -374,6 +454,7 @@ def test_case_4():
     tc.assertFalse(100 in lst)
     tc.assertTrue(50 in lst)
     suc()
+    print('comp4')
 
 ########################################
 # 15 points
@@ -413,6 +494,7 @@ def test_case_5():
     with tc.assertRaises(ValueError):
         lst.index(2, 4, -2)
     suc()
+    print('comp5')
 
 ########################################
 # 15 points
@@ -453,6 +535,7 @@ def test_case_6():
     tc.assertEqual(70, len(lst))
     tc.assertEqual(list(range(10))+list(range(10,0,-1))+data, arrayListToList(lst))
     suc()
+    print('comp6')
 
 ########################################
 # 15 points
@@ -473,6 +556,7 @@ def test_case_7():
         tc.assertEqual(next(it1), x)
         tc.assertEqual(next(it2), x)
     suc()
+    print('comp7')
 
 ########################################
 # success
@@ -494,6 +578,7 @@ def main():
     test_case_5()
     test_case_6()
     test_case_7()
+    print('compT')
 
 if __name__ == '__main__':
     main()
