@@ -12,20 +12,40 @@ class ExtensibleHashTable:
         self.buckets = [None] * n_buckets
         self.nitems = 0
 
-    def find_bucket(self, key):
+    def find_bucket(self, key, b, n):
         # BEGIN_SOLUTION
+        hashed = hash(key) % n
+        idx = 0
+        while b[hashed] and b[hashed][0] != key:
+            idx += 1
+            hashed = (hash(key) + idx)% n
+        return hashed
         # END_SOLUTION
 
     def __getitem__(self,  key):
         # BEGIN_SOLUTION
+        b = self.find_bucket(key, self.buckets,self.n_buckets)
+        if self.buckets[b]:
+            return self.buckets[b][1]
+        raise KeyError
         # END_SOLUTION
 
     def __setitem__(self, key, value):
         # BEGIN_SOLUTION
+        b = self.find_bucket(key,self.buckets,self.n_buckets)
+        if self.n_buckets*self.fillfactor <= self.nitems:
+            self.double()
+            b = self.find_bucket(key,self.buckets,self.n_buckets)
+        self.buckets[b] = (key,value)
+        self.nitems+=1
         # END_SOLUTION
 
     def __delitem__(self, key):
         # BEGIN SOLUTION
+        b = self.find_bucket(key,self.buckets,self.n_buckets)
+        if self.buckets[b] and self.buckets[b][0] == key:
+            self.buckets[b] = None
+            self.nitems-=1
         # END SOLUTION
 
     def __contains__(self, key):
@@ -43,6 +63,11 @@ class ExtensibleHashTable:
 
     def __iter__(self):
         ### BEGIN SOLUTION
+        count = 0
+        while count < len(self.buckets):
+            if self.buckets[count]:
+                yield self.buckets[count][0]
+            count +=1
         ### END SOLUTION
 
     def keys(self):
@@ -50,11 +75,30 @@ class ExtensibleHashTable:
 
     def values(self):
         ### BEGIN SOLUTION
+        count = 0
+        while count < len(self.buckets):
+            if self.buckets[count]:
+                yield self.buckets[count][1]
+            count +=1
         ### END SOLUTION
 
     def items(self):
         ### BEGIN SOLUTION
+        count = 0
+        while count < len(self.buckets):
+            if self.buckets[count]:
+                yield self.buckets[count]
+            count += 1
         ### END SOLUTION
+    
+    def double(self):
+        new = [None]*self.n_buckets*2
+        for i in self.buckets:
+            if i:
+                newBucket = self.find_bucket(i[0], new, self.n_buckets*2)
+                new[newBucket] = (i[0], i[1])
+        self.n_buckets *= 2
+        self.buckets = new
 
     def __str__(self):
         return '{ ' + ', '.join(str(k) + ': ' + str(v) for k, v in self.items()) + ' }'
