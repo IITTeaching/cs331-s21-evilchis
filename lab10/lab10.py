@@ -114,7 +114,7 @@ def traverse(t, fn):
         traverse(t.right, fn)
 
 # LL-fix (simple) test
-# 3 points
+# 10 points
 def test_ll_fix_simple():
     tc = TestCase()
     t = AVLTree()
@@ -126,7 +126,7 @@ def test_ll_fix_simple():
     tc.assertEqual([t.root.left.val, t.root.val, t.root.right.val], [1, 2, 3])
 
 # RR-fix (simple) test
-# 3 points
+# 10 points
 def test_rr_fix_simple():
     tc = TestCase()
     t = AVLTree()
@@ -138,7 +138,7 @@ def test_rr_fix_simple():
     tc.assertEqual([t.root.left.val, t.root.val, t.root.right.val], [1, 2, 3])
 
 # LR-fix (simple) test
-# 3 points
+# 10 points
 def test_lr_fix_simple():
     tc = TestCase()
     t = AVLTree()
@@ -150,7 +150,7 @@ def test_lr_fix_simple():
     tc.assertEqual([t.root.left.val, t.root.val, t.root.right.val], [1, 2, 3])
 
 # RL-fix (simple) test
-# 3 points
+# 10 points
 def test_rl_fix_simple():
     tc = TestCase()
     t = AVLTree()
@@ -162,7 +162,7 @@ def test_rl_fix_simple():
     tc.assertEqual([t.root.left.val, t.root.val, t.root.right.val], [1, 2, 3])
 
 # ensure key order is maintained after insertions and removals
-# 10 points
+# 20 points
 def test_key_order_after_ops():
     tc = TestCase()
     vals = list(range(0, 100000000, 333333))
@@ -182,7 +182,7 @@ def test_key_order_after_ops():
         tc.assertEqual(val, vals[i])
 
 # stress testing
-# 10 points
+# 20 points
 def test_stress_testing():
     tc = TestCase()
 
