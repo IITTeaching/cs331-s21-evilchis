@@ -162,7 +162,7 @@ def test_rl_fix_simple():
     tc.assertEqual([t.root.left.val, t.root.val, t.root.right.val], [1, 2, 3])
 
 # ensure key order is maintained after insertions and removals
-# 20 points
+# 30 points
 def test_key_order_after_ops():
     tc = TestCase()
     vals = list(range(0, 100000000, 333333))
@@ -182,7 +182,7 @@ def test_key_order_after_ops():
         tc.assertEqual(val, vals[i])
 
 # stress testing
-# 20 points
+# 30 points
 def test_stress_testing():
     tc = TestCase()
 
