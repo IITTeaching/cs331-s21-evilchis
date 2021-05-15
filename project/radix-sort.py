@@ -1,3 +1,4 @@
+# this stupidly hard project is done
 from unittest import TestCase 
 import urllib.request
 
@@ -9,46 +10,29 @@ def book_to_words(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
 def radix_a_book(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
 
     byte_lst = book_to_words(book_url)
-    
-    # finding highest length of word in byte_lst to determine how far the sort must iterate
-    # to ensure a complete sort
     max_len = 0
     for i in byte_lst:
         if max_len < len(i):
             max_len = len(i)
 
-    # LSD ITERATION - RADIX SORT LOOP - INDEX ADJUSTMENTS PERFORMED FOR EACH BYTE-STRING WITHIN COUNT_SORT()
     for i in range(max_len):
         byte_lst = count_sort(byte_lst, i, max_len - 1)
 
     return byte_lst
 
 def count_sort(arr, curr_i, max_idx):
-    # The output character array that will have sorted arr
     output = [0 for i in range(len(arr))]
- 
-    # Create a count array to store count of inidividul
-    # characters and initialize count array as 0
     count = [0 for i in range(128)]
-  
-    # Store count of each character
-    # i is a word in arr, and arr is a list of byte-strings
-    for i in arr:
 
-        # max_len - curr_i is how to 'pad' the strings at the back so that alphabetical order takes precedence
-        # over length of strings. Originally, length took precedence over alphabetical order in my algorithm, 
-        # which wasn't correct as a result of padding at the front of the strings.
+    for i in arr:
         if max_idx - curr_i < len(i):
             count[i[max_idx - curr_i]] += 1
         else:
             count[0] += 1
 
-    # Change count[i] so that count[i] now contains actual
-    # position of this character in output array
     for i in range(128):
         count[i] += count[i-1]
  
-    # Build the output character array
     for i in range(len(arr) -1, -1, -1):
         if max_idx - curr_i < len(arr[i]):
             output[count[arr[i][max_idx - curr_i]] - 1] = arr[i]
@@ -77,6 +61,7 @@ def main():
     test_book('https://www.gutenberg.org/files/345/345-0.txt', 'DRACULA') # dracula
     test_book('https://www.gutenberg.org/files/4300/4300-0.txt', 'ULYSSES') # ulysses
     print('ALL BOOKS CORRECTLY SORTED')
+    print('hooray')
 
 
 main()
